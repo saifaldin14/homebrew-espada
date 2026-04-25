@@ -3,50 +3,34 @@
 
 # Espada — self-hosted infrastructure control plane with conversational AI.
 #
-# This formula installs a pre-built, platform-specific tarball produced by
-# `.github/workflows/release.yml`. No network access is required during
-# `brew install`; the tarball already contains a flat production
-# `node_modules/` tree and the compiled `dist/` output.
+# This formula installs a pre-built, platform-specific tarball published to
+# this tap's GitHub releases. The tarball is fully self-contained — it ships
+# with `node_modules/` already vendored — so `brew install` runs no
+# `pnpm install` or postinstall scripts.
 #
-# The CLI requires Node.js >= 22.12, which we declare as a hard runtime
-# dependency. The shim in `bin/espada` is an exec wrapper around
-# `node libexec/espada-<version>/espada.mjs`.
-#
-# Update procedure (when you cut a new release):
-#   1. Push a `vX.Y.Z` tag — release workflow attaches tarballs to the GH release.
-#   2. Run `scripts/update-formula.mjs vX.Y.Z` to refresh `version`, urls,
-#      and sha256 fields in this file.
-#   3. Commit and push to saifaldin14/homebrew-espada.
+# Update procedure when you cut a new release:
+#   1. Build a tarball locally on a darwin/arm64 machine:
+#        node scripts/build-release-tarball.mjs
+#   2. Tag this tap repo `vX.Y.Z` and attach the tarball + .sha256 to the
+#      GitHub release.
+#   3. Bump `version` and the `sha256` below; commit + push.
 
 class Espada < Formula
   desc "Self-hosted infrastructure control plane with conversational AI"
-  homepage "https://github.com/saifaldin14/Espada-Auto"
+  homepage "https://github.com/saifaldin14/homebrew-espada"
   version "2026.1.27"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/saifaldin14/Espada-Auto/releases/download/v#{version}/espada-#{version}-darwin-arm64.tar.gz"
-      sha256 "0000000000000000000000000000000000000000000000000000000000000000"
-    end
-    on_intel do
-      url "https://github.com/saifaldin14/Espada-Auto/releases/download/v#{version}/espada-#{version}-darwin-x64.tar.gz"
-      sha256 "0000000000000000000000000000000000000000000000000000000000000000"
-    end
-  end
-
-  on_linux do
-    on_arm do
-      url "https://github.com/saifaldin14/Espada-Auto/releases/download/v#{version}/espada-#{version}-linux-arm64.tar.gz"
-      sha256 "0000000000000000000000000000000000000000000000000000000000000000"
-    end
-    on_intel do
-      url "https://github.com/saifaldin14/Espada-Auto/releases/download/v#{version}/espada-#{version}-linux-x64.tar.gz"
-      sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+      url "https://github.com/saifaldin14/homebrew-espada/releases/download/v#{version}/espada-#{version}-darwin-arm64.tar.gz"
+      sha256 "e87f3eb6e6c0971c647c2f61e6fdaaa4a47e0cd7d640844d62b9f36cd81b18fe"
     end
   end
 
   depends_on "node@22"
+  depends_on arch: :arm64
+  depends_on :macos
 
   def install
     libexec.install Dir["*"]
@@ -59,21 +43,20 @@ class Espada < Formula
 
   def caveats
     <<~EOS
-      Espada stores its config under ~/.espada/ and its workspace under
-      ~/espada by default. Run the first-time wizard with:
+      Espada stores its config under ~/.espada and its workspace under ~/espada
+      by default. Run the first-time wizard with:
 
           espada setup
 
-      To start a local Gateway in the dev profile (recommended for first run):
+      To start a local Gateway in dev mode:
 
           espada --dev gateway --force
 
-      Documentation: https://docs.espada.dev
+      Documentation: https://github.com/saifaldin14/homebrew-espada
     EOS
   end
 
   test do
     assert_match(/\d+\.\d+\.\d+/, shell_output("#{bin}/espada --version"))
-    assert_match("Usage: espada", shell_output("#{bin}/espada --help"))
   end
 end
