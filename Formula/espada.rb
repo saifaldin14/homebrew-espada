@@ -24,7 +24,7 @@ class Espada < Formula
   on_macos do
     on_arm do
       url "https://github.com/saifaldin14/homebrew-espada/releases/download/v#{version}/espada-#{version}-darwin-arm64.tar.gz"
-      sha256 "cff865ddf85f2f4b2346ffe7dc577901c4f4b0488c5d371d1308c84e9652f023"
+      sha256 "49fbaa7adf677bd4c1289e875a5813e988c0092d0036de1a3eee115a3971b119"
     end
   end
 
