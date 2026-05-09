@@ -18,13 +18,13 @@
 class Espada < Formula
   desc "Self-hosted infrastructure control plane with conversational AI"
   homepage "https://github.com/saifaldin14/homebrew-espada"
-  version "2026.1.45"
+  version "2026.1.46"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/saifaldin14/homebrew-espada/releases/download/v#{version}/espada-#{version}-darwin-arm64.tar.gz"
-      sha256 "49fbaa7adf677bd4c1289e875a5813e988c0092d0036de1a3eee115a3971b119"
+      sha256 "1fae98e85f482ac38e6e06ca7aa27bfa467d650ce9cb3d0e5855a9d9d93aaddc"
     end
   end
 
